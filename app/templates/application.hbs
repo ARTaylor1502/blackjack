@@ -1,7 +1,16 @@
 {{page-title "Blackjack"}}
 
-{{!-- The following component displays Ember's default welcome message. --}}
-<WelcomePage />
-{{!-- Feel free to remove this! --}}
+<div id="blackjack-table">
+    <div id="dealer-area" class="table-area">
+        <div id="dealer-placeholder" class="card-placeholder">
+             <span class="player-name">Dealer</span>
+        </div>
+    </div>
+    <div id="player-area" class="table-area">
+        <div class="card-placeholder">
+            <span class="player-name">Player</span>
+        </div>
+    </div>
+</div>
 
 {{outlet}}
