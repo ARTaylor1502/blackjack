@@ -8,6 +8,7 @@ export default class BlackjackgameComponent extends Component {
   @tracked dealerCards = [];
   @tracked playerCards = [];
   @tracked dealersTurn = false;
+  @tracked dealersTurnInterval;
   @tracked playersTurn = false;
   @tracked gameOver = false;
   @tracked gameResultMessage = '';
@@ -65,20 +66,13 @@ export default class BlackjackgameComponent extends Component {
   }
 
   @action
-  endGame() {
-    this.gameOver = true;
-    this.playersTurn = false;
-    this.dealersTurn = false;
-  }
-
-  @action
   drawPlayerCard() {
     this.playerCards = [...this.playerCards, this.dealCard()];
     const playersHandTotal = this.calculateTotalHandValue(this.playerCards);
 
     if (playersHandTotal > 21) {
       this.endGame();
-      this.gameResultMessage = 'Player Bust, Dealer Wins';
+      this.calculateWinner();
     }
   }
 
@@ -86,5 +80,53 @@ export default class BlackjackgameComponent extends Component {
   endPlayersTurn() {
     this.playersTurn = false;
     this.dealersTurn = true;
+    this.startDealersTurn();
+  }
+
+  startDealersTurn() {
+    this.dealersTurnInterval = setInterval(() => {
+      this.drawDealerCard();
+    }, 1000);
+  }
+
+  drawDealerCard() {
+    this.dealerCards = [...this.dealerCards, this.dealCard()];
+    const dealersHandTotal = this.calculateTotalHandValue(this.dealerCards);
+
+    if (dealersHandTotal >= 17) {
+      this.playersTurn = false;
+      this.endGame();
+      this.calculateWinner();
+    }
+  }
+
+  @action
+  calculateWinner() {
+    let playersHandSum = this.calculateTotalHandValue(this.playerCards);
+    let dealersHandSum = this.calculateTotalHandValue(this.dealerCards);
+
+    switch (true) {
+      case playersHandSum <= 21 && playersHandSum > dealersHandSum:
+        this.gameResultMessage = 'Player Wins!';
+        break;
+      case dealersHandSum <= 21 && dealersHandSum > playersHandSum:
+        this.gameResultMessage = 'Dealer Wins!';
+        break;
+      case dealersHandSum > 21:
+        this.gameResultMessage = 'Dealer Bust, Player Wins!';
+        break;
+      case playersHandSum > 21:
+        this.gameResultMessage = 'Player Bust, Dealer Wins!';
+        break;
+      default:
+        this.gameResultMessage = 'Push';
+        break;
+    }
+  }
+
+  @action
+  endGame() {
+    clearInterval(this.dealersTurnInterval);
+    this.gameOver = true;
   }
 }
