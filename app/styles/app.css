@@ -178,12 +178,24 @@ html, body {
     width: 100%;
     position: fixed;
     top: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-
+    background-color: rgba(0, 0, 0, 0.6);
+    flex-direction: column;
 }
 
 #game-result-message {
     color: #fff;
     font-size: 2rem;
+}
+
+#play-again-btn {
+    background: #e9a034;
+    margin-top: 1.5rem;
+}
+
+#play-again-btn:hover {
+    background: #e6b264;
+}
+
+#play-again-btn:active {
+    background: #ab7524;
 }

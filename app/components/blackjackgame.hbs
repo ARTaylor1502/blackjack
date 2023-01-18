@@ -36,8 +36,9 @@
     </div>
 </div>
 {{#if this.gameOver}}
-    <div id="game-result-container" {{on "click" this.startGame}}>
+    <div id="game-result-container">
         <div id="game-result-message">{{this.gameResultMessage}}</div>
+        <button id="play-again-btn" class="btn" type="button" {{on "click" this.startGame}}>Play Again?</button>
     </div>
 {{/if}}
 {{yield}}
