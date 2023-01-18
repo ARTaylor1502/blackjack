@@ -11,9 +11,14 @@ export default class BlackjackgameComponent extends Component {
 
   @action
   dealCard() {
+    const cardClub = this.suits[Math.floor(Math.random() * this.suits.length)];
+    const cardValue = Math.floor(Math.random() * 13) + 1;
+    const imgUri = `assets/images/cards/${cardClub}${cardValue}.svg`;
+
     return {
-      club: this.suits[Math.floor(Math.random() * this.suits.length)],
-      value: Math.floor(Math.random() * 13) + 1,
+      club: cardClub,
+      value: cardValue,
+      img_uri: imgUri,
     };
   }
 

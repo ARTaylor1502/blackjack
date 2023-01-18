@@ -66,6 +66,7 @@ html, body {
 }
 
 .card-placeholder {
+    position: relative;
     width: 10rem;
     height: 14rem;
     border: 3px solid #fff;
@@ -78,9 +79,21 @@ html, body {
     margin-top: 5rem;
 }
 
+#dealer-area .card-area {
+    position: absolute;
+    top: 5rem;
+    display: flex;
+}
+
 #player-area .card-placeholder {
     margin-top: auto;
     margin-bottom: 5rem;
+}
+
+#player-area .card-area {
+    position: absolute;
+    bottom: 5rem;
+    display: flex;
 }
 
 .player-name {
@@ -107,4 +120,9 @@ html, body {
 
 #new-game:active {
     background: #ca3535;
+}
+
+.playing-card {
+    max-height: 200px;
+    margin-right: 5px;
 }

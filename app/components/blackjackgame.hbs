@@ -1,11 +1,21 @@
 <div id="blackjack-table">
     <div id="dealer-area" class="table-area">
         <div id="dealer-placeholder" class="card-placeholder">
-             <span class="player-name">Dealer</span>
+            <span class="player-name">Dealer</span>
+            <div class="card-area">
+            {{#each this.dealerCards as |card|}}
+              <img class="playing-card" src="assets/images/cards/card-back.svg" alt="Playing Card"/>
+            {{/each}}
+            </div>
         </div>
     </div>
     <div id="player-area" class="table-area">
         <div class="card-placeholder">
+            <div class="card-area">
+            {{#each this.playerCards as |card|}}
+                <img class="playing-card" src="{{card.img_uri}}" alt="Playing Card"/>
+            {{/each}}
+            </div>
             <span class="player-name">Player</span>
         </div>
         <button id="new-game" type="button" {{on "click" this.startGame}}>New Game</button>
