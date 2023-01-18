@@ -48,20 +48,37 @@ export default class BlackjackgameComponent extends Component {
     for (let i = 0; i <= 1; i++) {
       this.dealerCards.push(this.dealCard());
 
-      if (this.calculateTotalHandValue(this.playerCards) === 21) {
-        this.gameOver = true;
-        this.gameResultMessage = 'Black jack!, Player Wins!';
+      let totalHandValue = this.calculateTotalHandValue(this.playerCards);
+
+      if (
+        totalHandValue.lowestPossibleTotal === 21 ||
+        totalHandValue.highestPossibleTotal === 21
+      ) {
+        this.endGame();
+        this.calculateWinner();
       }
     }
   }
 
   @action
   calculateTotalHandValue(cards) {
-    let total = 0;
+    let total = {
+      lowestPossibleTotal: 0,
+      highestPossibleTotal: 0,
+    };
 
     for (let i = 0; i < cards.length; i++) {
-      total += cards[i].value;
+      const cardValue = cards[i].value;
+
+      if (cardValue === 1) {
+        total.lowestPossibleTotal += cardValue;
+        total.highestPossibleTotal += 11;
+      } else {
+        total.lowestPossibleTotal += cardValue;
+        total.highestPossibleTotal += cardValue;
+      }
     }
+
     return total;
   }
 
@@ -70,7 +87,7 @@ export default class BlackjackgameComponent extends Component {
     this.playerCards = [...this.playerCards, this.dealCard()];
     const playersHandTotal = this.calculateTotalHandValue(this.playerCards);
 
-    if (playersHandTotal > 21) {
+    if (playersHandTotal.lowestPossibleTotal > 21) {
       this.endGame();
       this.calculateWinner();
     }
@@ -84,16 +101,23 @@ export default class BlackjackgameComponent extends Component {
   }
 
   startDealersTurn() {
-    this.dealersTurnInterval = setInterval(() => {
-      this.drawDealerCard();
-    }, 1000);
+    const handValue = this.calculateTotalHandValue(this.dealerCards);
+
+    if (handValue.highestPossibleTotal < 17) {
+      this.dealersTurnInterval = setInterval(() => {
+        this.drawDealerCard();
+      }, 1000);
+    } else {
+      this.endGame();
+      this.calculateWinner();
+    }
   }
 
   drawDealerCard() {
     this.dealerCards = [...this.dealerCards, this.dealCard()];
     const dealersHandTotal = this.calculateTotalHandValue(this.dealerCards);
 
-    if (dealersHandTotal >= 17) {
+    if (dealersHandTotal.lowestPossibleTotal >= 17) {
       this.playersTurn = false;
       this.endGame();
       this.calculateWinner();
@@ -106,16 +130,28 @@ export default class BlackjackgameComponent extends Component {
     let dealersHandSum = this.calculateTotalHandValue(this.dealerCards);
 
     switch (true) {
-      case playersHandSum <= 21 && playersHandSum > dealersHandSum:
+      case playersHandSum.lowestPossibleTotal === 21 ||
+        playersHandSum.highestPossibleTotal === 21:
+        this.gameResultMessage = 'Black jack!, Player Wins!';
+        break;
+      case playersHandSum.highestPossibleTotal ===
+        dealersHandSum.highestPossibleTotal:
+        this.gameResultMessage = 'Push';
+        break;
+      case playersHandSum.highestPossibleTotal <= 21 &&
+        playersHandSum.highestPossibleTotal >
+          dealersHandSum.highestPossibleTotal:
         this.gameResultMessage = 'Player Wins!';
         break;
-      case dealersHandSum <= 21 && dealersHandSum > playersHandSum:
+      case dealersHandSum.highestPossibleTotal <= 21 &&
+        dealersHandSum.highestPossibleTotal >
+          playersHandSum.highestPossibleTotal:
         this.gameResultMessage = 'Dealer Wins!';
         break;
-      case dealersHandSum > 21:
+      case dealersHandSum.lowestPossibleTotal > 21:
         this.gameResultMessage = 'Dealer Bust, Player Wins!';
         break;
-      case playersHandSum > 21:
+      case playersHandSum.lowestPossibleTotal > 21:
         this.gameResultMessage = 'Player Bust, Dealer Wins!';
         break;
       default:
